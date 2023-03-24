@@ -1,0 +1,14 @@
+asyncpg==0.27.0
+sqlalchemy==1.4.45
+psycopg2-binary==2.9.5
+pydantic[email, dotenv]
+python-jose
+websockets
+redis
+uvicorn==0.21.1
+passlib
+cryptography
+alembic==1.9.0
+fastapi==0.92.0
+python-multipart
+

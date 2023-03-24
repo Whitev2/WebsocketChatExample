@@ -30,9 +30,6 @@ async def websocket_endpoint(chat_id: int,
                              db_session: AsyncSession = Depends(get_session)):
     chat_crud = ChatCrud(db_session)
 
-    # if not await chat_crud.user_in_chat(chat_id, user_id):
-    #   raise
-
     await notifier.connect(chat_id, user_id, websocket)
     row = f"Клиент id: {user_id} пишет: "
 
@@ -44,7 +41,8 @@ async def websocket_endpoint(chat_id: int,
                                                                    user_id=str(user_id),
                                                                    body=data,
                                                                    type='text',
-                                                                   content='')))
+                                                                   content='')))  # for background task
+
             await notifier.send_in_group(chat_id, user_id, row + data)
     except WebSocketDisconnect:
         notifier.remove(chat_id, user_id)

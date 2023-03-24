@@ -1,23 +1,19 @@
 
 
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=40&pause=1000&color=373737&background=91C5F4&center=true&vCenter=true&multiline=true&width=1080&height=80&lines=The+Bet+API)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Fira+Code&size=40&pause=1000&color=373737&background=91C5F4&center=true&vCenter=true&multiline=true&width=1080&height=80&lines=The+websocket+chat)](https://git.io/typing-svg)
 
 ## Used technology
-- Python 3.10;
+- Python 3.11;
 - FastApi ( Web framework for building APIs );
-- Docker and Docker Compose ( containerization );
+- Websocket ( chat )
+- Dockerfile and Docker Compose ( containerization );
 - PostgreSQL ( database );
 - SQLAlchemy ( working with database from Python );
-- RabbitMQ ( Queue )
 - Alembic ( database migrations made easy );
 - Pydantic ( models )
 
 <hr/>
 
-![image](templates/provider.png)
-![image](templates/user.png)
-
-<hr/>
 
 ### Установка и запуск
 
@@ -63,29 +59,28 @@ docker-compose up
 
 ### API: Документация
 
-- Provider_URL: http://localhost:8001
-- Maker_URL: http://localhost:8000
-- 
-- Provider Swagger UI: http://localhost:8001/docs
-- Maker ReDoc UI: http://localhost:8000/redoc
+- Base_url: http://localhost:8000
+- Swagger docs: http://localhost:8000/docs
+- Chat ws: ws://localhost:8000/ws/CHAT_ID/USER_ID
+
+
+
 
 <hr/>
 
 ### Описание функционала
-- Сервис позволяет просматривать активные ивенты
-- Сервис позволяет делать ставки на активные ивенты
-- Сервис позволяет просматривать свои ставки
-- Сумма ставки не может быть меньше 0 - иначе будет вызвана ошибка
-- Maker получает активные ивенты из Provider через endpoint url
-- При изменении состояния со стороны Provider - меняется статус у ставки
-- Обмен данными для изменения состояний реализован через aio-pika и RabbitMQ
-- Все сервисы собираются в Docker Compose
-- Возможна интеграция с k8s
+- Сервис позволяет пользователю проходить регистрацию и авторизацию
+- Авторизация построена с помощью jwt токена
+- Реализованы чаты с комнатами, чаты не привязаны к юзерам на уровне базы для упрощения разделения на сервисы
+- Чтобы подключиться к сокету - необходимо изначально создать комнату с чатом и добавить пользователей, передав их user_id
+- Сокет позволяет обмениваться сообщениями в реальном времени
+- Реализованы базовые тесты для проверки API
 
 ### Что можно доработать
-- Покрыть все Юнитами
-- Запись в базу должна быть транзакционной и атомарной
-- Расставить блокировки чтобы исключить состояние гонки
+- Разбить на сервисы
+- Вместо websockets можно воспользоваться centrifugo сервисом
+- Сохранение сообщений должно быть в background task
+
 
 
 

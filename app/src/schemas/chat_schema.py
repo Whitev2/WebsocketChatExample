@@ -1,10 +1,16 @@
 from datetime import datetime
+from typing import List, Union
 
 from pydantic.main import BaseModel
 
 
 class CreateUserRoom(BaseModel):
     owner_id: str
+
+
+class AddUserToChat(BaseModel):
+    chat_id: int
+    users_id: List[Union[str, int]]
 
 
 class SaveMessage(BaseModel):

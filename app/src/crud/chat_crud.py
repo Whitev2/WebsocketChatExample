@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.models.chat_models.chat_model import Chat
 from database.models.chat_models.members_model import ChatMember
 from database.models.chat_models.messages_model import Message
-from src.schemas.chat_schema import CreateUserRoom, SaveMessage, MessageOut
+from src.schemas.chat_schema import CreateUserRoom, SaveMessage, MessageOut, ChatMemberOut
 
 
 class ChatCrud:
@@ -19,6 +19,9 @@ class ChatCrud:
     async def _close_session(self):
         if self._session.is_active:
             await self._session.close()
+
+    async def _get_chat_by_id(self, chat_id) -> Chat | None:
+        return await self._session.get(Chat, chat_id)
 
     async def get_chat_history(self, chat_id: int) -> List[MessageOut]:
         chat: Chat = await self._session.get(Chat, chat_id)
@@ -48,12 +51,16 @@ class ChatCrud:
         await self._close_session()
         return added_userd
 
-    async def add_user_to_chat(self, user_id_list: List[str], chat_id: int) -> List[ChatMember]:
-        added_users: List[ChatMember] = list()
+    async def add_user_to_chat(self, user_id_list: List[str], chat_id: int) -> List[ChatMemberOut]:
+        added_users: List[ChatMemberOut] = list()
+
+        if await self._get_chat_by_id(chat_id) is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Chat not found")
+
         for user_id in user_id_list:
             member = ChatMember(chat_id=chat_id, user_id=user_id)
             self._session.add(member)
-            added_users.append(member)
+            added_users.append(ChatMemberOut(chat_id=chat_id, user_id=user_id))
 
         try:
             await self._session.commit()

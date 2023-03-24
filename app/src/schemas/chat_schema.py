@@ -15,7 +15,7 @@ class AddUserToChat(BaseModel):
 
 class SaveMessage(BaseModel):
     chat_id: int
-    user_id: str
+    user_id: Union[str, int]
 
     body: str
     type: str
@@ -26,13 +26,18 @@ class MessageOut(BaseModel):
     id: int
 
     chat_id: int
-    user_id: str
+    user_id: Union[str, int]
 
     body: str
     type: str
     content: str
 
     created_at: datetime
+
+
+class ChatMemberOut(BaseModel):
+    chat_id: int
+    user_id: Union[str, int]
 
 
 class ChatOut(BaseModel):

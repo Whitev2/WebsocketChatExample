@@ -4,6 +4,8 @@ from fastapi import FastAPI
 from fastapi import Depends
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.websockets import WebSocket, WebSocketDisconnect
+from websockets import exceptions as ws_exc
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.postgres import get_session
@@ -29,6 +31,8 @@ async def websocket_endpoint(chat_id: int,
                              websocket: WebSocket,
                              db_session: AsyncSession = Depends(get_session)):
     chat_crud = ChatCrud(db_session)
+    if not await chat_crud.user_in_chat(chat_id, user_id):
+        raise ws_exc.InvalidParameterValue(name='user_id', value=user_id)
 
     await notifier.connect(chat_id, user_id, websocket)
     row = f"Клиент id: {user_id} пишет: "

@@ -8,39 +8,6 @@ host = "http://localhost:8000/"
 ws = 'ws://localhost:8000/ws'
 
 
-async def websocket_server():
-
-    async with websockets.connect(ws + '/1/1') as websocket:
-        text = 'hello!'
-
-        await websocket.send(text)
-        await websocket.close()
-
-
-@pytest.mark.parametrize('anyio_backend', ['asyncio'])
-async def test_websocket(anyio_backend):
-    async with websockets.connect(ws + '/1/2') as websocket:
-
-        await websocket_server()
-        data = await websocket.recv()
-
-        assert data == 'Клиент id: 1 пишет: hello!'
-
-        await websocket.close()
-
-
-def test_chat_room():
-    data = {
-        "owner_id": f"{uuid.uuid4()}",
-    }
-    user_resp = requests.post(f'{host}chat/create', json=data)
-    assert user_resp.status_code == 200
-
-    user_resp = user_resp.json()
-
-    assert len(user_resp) > 0
-    assert user_resp[0].get('chat_id') > 0
-
 
 def test_api():
 
@@ -79,3 +46,50 @@ def test_api():
     assert user_resp.status_code == 200
     user = user_resp.json()
     assert user.get('uid') == user_uid
+
+
+
+def test_chat_room():
+    data = {
+        "owner_id": "1",
+    }
+    user_resp = requests.post(f'{host}chat/create', json=data)
+    assert user_resp.status_code == 201
+
+    user_resp = user_resp.json()
+
+    assert len(user_resp) > 0
+    assert user_resp[0].get('chat_id') > 0
+
+    data = {
+        "chat_id": "1",
+        "users_id": ["2"],
+    }
+    user_resp = requests.post(f'{host}chat/room/add-user', json=data)
+    assert user_resp.status_code == 200
+
+    user_resp = user_resp.json()
+
+    assert len(user_resp) > 0
+    assert user_resp[0].get('chat_id') > 0
+
+
+async def websocket_server():
+
+    async with websockets.connect(ws + '/1/1') as websocket:
+        text = 'hello!'
+
+        await websocket.send(text)
+        await websocket.close()
+
+
+@pytest.mark.parametrize('anyio_backend', ['asyncio'])
+async def test_websocket(anyio_backend):
+    async with websockets.connect(ws + '/1/2') as websocket:
+
+        await websocket_server()
+        data = await websocket.recv()
+
+        assert data == 'Клиент id: 1 пишет: hello!'
+
+        await websocket.close()

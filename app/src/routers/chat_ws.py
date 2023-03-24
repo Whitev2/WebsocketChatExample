@@ -31,11 +31,13 @@ async def websocket_endpoint(chat_id: int,
                              websocket: WebSocket,
                              db_session: AsyncSession = Depends(get_session)):
     chat_crud = ChatCrud(db_session)
-    if not await chat_crud.user_in_chat(chat_id, user_id):
-        raise ws_exc.InvalidParameterValue(name='user_id', value=user_id)
 
     await notifier.connect(chat_id, user_id, websocket)
     row = f"Клиент id: {user_id} пишет: "
+
+    if not await chat_crud.user_in_chat(chat_id, user_id):
+        notifier.remove(chat_id, user_id)
+        raise ws_exc.InvalidParameterValue(name='user_id', value=user_id)
 
     try:
         while True:

@@ -24,4 +24,3 @@ async def get_session() -> AsyncSession:
     """
     async with Postgres().async_session() as session:
         yield session
-

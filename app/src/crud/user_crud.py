@@ -55,7 +55,7 @@ class UserCrud:
         await self._close_session()
 
         str_data = json.dumps(UserResponse(**user.__dict__).dict())
-        await DataRedis().set_key(user_id, str_data, 120)  # В проде подобные действия стоит отправлять в background task
+        await DataRedis().set_key(user_id, str_data, 120)  # for background task
 
         return UserResponse(**user.__dict__)
 

@@ -27,8 +27,6 @@ class DataRedis(RedRedis):
             keys, data, ex=ttl
         )
 
-
-
     @classmethod
     async def get_data(cls, key: str):
         return await cls.data_redis.get(key)

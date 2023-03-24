@@ -23,4 +23,3 @@ class Token(BaseModel):
 
 class Logout(BaseModel):
     refresh_token: str
-

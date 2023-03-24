@@ -9,4 +9,3 @@ class ChatMember(Base):
 
     chat_id = Column(Integer, ForeignKey("chats.id"))
     user_id = Column(String, nullable=False)
-

@@ -42,9 +42,7 @@ def test_chat_room():
     assert user_resp[0].get('chat_id') > 0
 
 
-
 def test_api():
-
 
     data_1 = {
         "email": f"{uuid.uuid4()}@example.com",
@@ -75,15 +73,9 @@ def test_api():
     user_resp = requests.post(f'{host}signin', data=data_2)
     assert user_resp.status_code == 404
 
-
     # get user
     user_resp = requests.get(f'{host}user/', headers={'Authorization': 'Bearer ' + access_token})
 
     assert user_resp.status_code == 200
     user = user_resp.json()
     assert user.get('uid') == user_uid
-
-
-
-
-
